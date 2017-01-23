@@ -125,5 +125,5 @@ You can try it out with any policies by running `node csp-logger.js -c yourconfi
 ## Looking in the database
 
 ```
-select "documentURI", "blockedURI", "sourceFile", "lineNumber" from "cspViolations" ORDER BY id DESC;
+heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber" from "cspViolations" ORDER BY id DESC;'
 ```
