@@ -1,38 +1,20 @@
 {
-  "name": "csp-logger",
+  "name": "tsl-csp-logger",
   "version": "0.2.0",
   "description": "Content Security Policy Logging Service",
   "main": "lib/index.js",
   "bin": {
     "csp-logger": "csp-logger.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/mozilla/csp-logger.git"
-  },
   "scripts": {
-    "test": "grunt validate"
+    "test": "grunt validate",
+    "start": "node csp-logger.js"
   },
   "keywords": [
     "csp",
     "security",
     "content security policy"
   ],
-  "author": "Mozilla",
-  "contributors": [
-    {
-      "name": "Gavin Lazar Suntop",
-      "email": "gavin@gsuntop.com"
-    },
-    {
-      "name": "Zbyszek Tenerowicz",
-      "email": "naugtur@gmail.com"
-    }
-  ],
-  "bugs": {
-    "url": "https://github.com/mozilla/csp-logger/issues"
-  },
-  "homepage": "https://github.com/mozilla/csp-logger",
   "dependencies": {
     "JSV": "~4.0.2",
     "express": "^4.4.0",
@@ -46,7 +28,6 @@
     "grunt-contrib-jshint": "~0.7.2",
     "grunt-jsbeautifier": "~0.2.6"
   },
-  "license": "http://www.mozilla.org/MPL/2.0/",
   "engines": {
     "node": ">=0.10"
   }
