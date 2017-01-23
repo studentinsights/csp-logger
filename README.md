@@ -121,3 +121,9 @@ Overriding `getRaw` requires the output to match SQL schema, so all modification
 ## Testing your policies
 
 You can try it out with any policies by running `node csp-logger.js -c yourconfig.json --test` as it serves `test/index.html` file on the root path alongside the `/csp` route.
+
+## Looking in the database
+
+```
+select "documentURI", "blockedURI", "sourceFile", "lineNumber" from "cspViolations" ORDER BY id DESC;
+```
