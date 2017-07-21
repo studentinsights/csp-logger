@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "Content Security Policy Logging Service",
   "main": "lib/index.js",
+  "engines": {
+    "node": "6.11.1"
+  },
   "bin": {
     "csp-logger": "csp-logger.js"
   },
