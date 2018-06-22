@@ -35,13 +35,10 @@ if (shouldReportToRollbar) {
 server.listen(config.port, function (reportObject, req) {
   store.save(reportObject);
   if (shouldReportToRollbar) {
-    rollbar.log({
-      message: 'CSP violation',
-      custom: {
-        environment: 'csp-logger',
-        deploymentKey: 'csp-logger',
-        districtKey: 'csp-logger'
-      }
+    rollbar.log('CSP violation', {
+      environment: 'csp-logger',
+      deploymentKey: 'csp-logger',
+      districtKey: 'csp-logger'
     });
   }
 });
