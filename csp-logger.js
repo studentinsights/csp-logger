@@ -35,7 +35,7 @@ if (shouldReportToRollbar) {
 server.listen(config.port, function (reportObject, req) {
   store.save(reportObject);
   if (shouldReportToRollbar) {
-    rollbar.log('CSP violation', {
+    rollbar.warning('CSP violation', {
       environment: 'csp-logger',
       deploymentKey: 'csp-logger',
       districtKey: 'csp-logger'
