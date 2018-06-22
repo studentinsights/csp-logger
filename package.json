@@ -4,7 +4,7 @@
   "description": "Content Security Policy Logging Service",
   "main": "lib/index.js",
   "engines": {
-    "node": "6.11.1"
+    "node": ">=0.10"
   },
   "bin": {
     "csp-logger": "csp-logger.js"
@@ -26,14 +26,12 @@
     "optimist": "^0.6.1",
     "pg": "^6.1.2",
     "pg-hstore": "^2.3.2",
+    "rollbar": "^2.4.1",
     "sequelize": "^2.0.0-dev11"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-jshint": "~0.7.2",
     "grunt-jsbeautifier": "~0.2.6"
-  },
-  "engines": {
-    "node": ">=0.10"
   }
 }
