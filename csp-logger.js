@@ -44,13 +44,13 @@ server.listen(config.port, function (reportObject, req) {
 function shouldReportToRollbar(reportObject) {
   // Our CSP disallows chrome-extensions.  Log this but don't send to Rollbar.
   // See https://stackoverflow.com/questions/32336860/why-would-i-get-a-csp-violation-for-the-blocked-uri-about#35559407
-  if (reportObject['blockedURI'] === 'chrome-extension') return false;
-  if (reportObject['blockedURI'] === 'about') return false;
+  if (reportObject.blockedURI === 'chrome-extension') return false;
+  if (reportObject.blockedURI === 'about') return false;
   return true;
 }
 
 function reportToRollbar(reportObject, req) {
-  var reportingDomain = url.parse(reportObject['document-uri']).host;
+  var reportingDomain = url.parse(reportObject.documentURI).host;
   rollbar.warning('CSP violation from ' + reportingDomain, {
     reportingDomain: reportingDomain,
     deploymentKey: 'csp-logger',
