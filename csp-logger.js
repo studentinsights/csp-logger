@@ -37,6 +37,7 @@ server.listen(config.port, function (reportObject, req) {
   store.save(reportObject);
 
   if (isRollbarEnabled && shouldReportToRollbar(reportObject)) {
+    console.log('Sent to Rollbar.');
     reportToRollbar(reportObject, req);
   }
 });
