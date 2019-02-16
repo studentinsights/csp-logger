@@ -72,6 +72,9 @@ function reportToRollbar(reportObject, req) {
   rollbar.warning('CSP violation from ' + reportingDomain, {
     reportingDomain: reportingDomain,
     deploymentKey: 'csp-logger',
-    districtKey: 'csp-logger'
+    districtKey: 'csp-logger',
+    violatedDirective: reportObject.data.violatedDirective,
+    blockedURI: reportObject.data.blockedURI,
+    documentURI: reportObject.data.documentURI
   });
 }
