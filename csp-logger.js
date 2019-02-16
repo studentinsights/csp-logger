@@ -41,11 +41,28 @@ server.listen(config.port, function (reportObject, req) {
   }
 });
 
+
+// Log these exceptions to the database, but don't send them
+// to Rollbar since they're likely just noise.
 function shouldReportToRollbar(reportObject) {
-  // Our CSP disallows chrome-extensions.  Log this but don't send to Rollbar.
+  // Our CSP disallows chrome-extensions.
   // See https://stackoverflow.com/questions/32336860/why-would-i-get-a-csp-violation-for-the-blocked-uri-about#35559407
   if (reportObject.data.blockedURI === 'chrome-extension') return false;
   if (reportObject.data.blockedURI === 'about') return false;
+
+  // Firefox containers also report false positives, so if the
+  // injection is on column 1 on line 1 in Firefox, ignore it.
+  var isMaybeFirefoxContainer = (
+    (reportObject.data.userAgent.indexOf('Mozilla/5.0') !== -1) &&
+    (reportObject.data.userAgent.indexOf('Gecko') !== -1) && 
+    (reportObject.data.userAgent.indexOf('Firefox') !== -1) &&
+    (reportObject.data.violatedDirective === 'script-src') &&
+    (reportObject.data.blockedURI === 'inline') &&
+    (reportObject.data.lineNumber === 1) &&
+    (reportObject.data.columnNumber === 1)
+  );
+  if (isMaybeFirefoxContainer) return false;
+
   return true;
 }
 
