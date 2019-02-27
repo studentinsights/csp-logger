@@ -75,6 +75,8 @@ function reportToRollbar(reportObject, req) {
     districtKey: 'csp-logger',
     violatedDirective: reportObject.data.violatedDirective,
     blockedURI: reportObject.data.blockedURI,
-    documentURI: reportObject.data.documentURI
+    documentURI: reportObject.data.documentURI,
+    scriptSample: reportObject.data.scriptSample,
+    userAgent: reportObject.data.userAgent
   });
 }
