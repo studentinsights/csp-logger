@@ -20,3 +20,8 @@ Configure your CSP to report to the `/csp` route of this service. Incoming repor
 ```
 heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" ORDER BY id DESC;'
 ```
+
+## Ignore exceptions
+```
+heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" WHERE "cspViolations.lineNumber" != '1' AND "cspViolations.columnNumber" != '1' ORDER BY id DESC;'
+```
