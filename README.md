@@ -16,7 +16,17 @@ Then run `npm start`.
 Configure your CSP to report to the `/csp` route of this service. Incoming reports will be logged to your designated storage.
 
 ## Looking in the database
-
+### Everything
 ```
 heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" ORDER BY id DESC;'
+```
+
+### Ignore exceptions
+```
+heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" WHERE "lineNumber" != 1 AND "columnNumber" != 1 ORDER BY id DESC;'
+```
+
+### Delete only most common exceptions
+```
+heroku pg:psql -c 'DELETE from "cspViolations" WHERE "lineNumber" = 1 AND "columnNumber" = 1';
 ```
