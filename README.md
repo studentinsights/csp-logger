@@ -21,6 +21,10 @@ Configure your CSP to report to the `/csp` route of this service. Incoming repor
 heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" ORDER BY id DESC;'
 ```
 
+### More details
+`select "id", "documentURI", "blockedURI", "sourceFile", "referrer" from "cspViolations" order by id desc limit 80;`
+
+
 ### Ignore exceptions
 ```
 heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI", "blockedURI", "sourceFile", "lineNumber", "columnNumber" from "cspViolations" WHERE "lineNumber" != 1 AND "columnNumber" != 1 ORDER BY id DESC;'
@@ -28,5 +32,13 @@ heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI",
 
 ### Delete only most common exceptions
 ```
-heroku pg:psql -c 'DELETE from "cspViolations" WHERE "lineNumber" = 1 AND "columnNumber" = 1';
+heroku pg:psql -c 'SELECT from "cspViolations" WHERE "lineNumber" = 1 AND "columnNumber" = 1';
 ```
+
+### Uniques
+`SELECT DISTINCT CONCAT_WS('   ', "violatedDirective", "documentURI", "blockedURI", "sourceFile") as key FROM "cspViolations" order by key ASC;`
+
+
+### extensions
+`SELECT * from "cspViolations" where "blockedURI" = 'inline' AND "sourceFile" LIKE 'moz-extension://%';`
+

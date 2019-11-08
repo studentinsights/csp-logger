@@ -34,7 +34,9 @@ if (isRollbarEnabled) {
 }
 
 server.listen(config.port, function (reportObject, req) {
-  store.save(reportObject);
+  if (shouldWriteToDatabase(reportObject)) {
+    store.save(reportObject);
+  }
 
   if (isRollbarEnabled && shouldReportToRollbar(reportObject)) {
     console.log('Sent to Rollbar.');
@@ -43,17 +45,51 @@ server.listen(config.port, function (reportObject, req) {
 });
 
 
-// Log these exceptions to the database, but don't send them
-// to Rollbar since they're likely just noise.
-function shouldReportToRollbar(reportObject) {
-  // Our CSP disallows chrome-extensions.
-  // See https://stackoverflow.com/questions/32336860/why-would-i-get-a-csp-violation-for-the-blocked-uri-about#35559407
-  if (reportObject.data.blockedURI === 'chrome-extension') return false;
-  if (reportObject.data.blockedURI === 'about') return false;
+// Don't write to database
+function shouldWriteToDatabase(reportObject) {
+  if (isProbablyAnExtension(reportObject)) return false;
+  if (isProbablyFirefoxContainer(reportObject)) return false;
 
-  // Firefox containers also report false positives, so if the
-  // injection is on column 1 on line 1 in Firefox, ignore it.
-  var isMaybeFirefoxContainer = (
+  return true;
+}
+
+// Don't report to Rollbar
+function shouldReportToRollbar(reportObject) {
+  if (isProbablyAnExtension(reportObject)) return false;
+  if (isProbablyFirefoxContainer(reportObject)) return false;
+
+  return true;
+}
+
+// Our CSP disallows chrome-extensions.
+// See https://stackoverflow.com/questions/32336860/why-would-i-get-a-csp-violation-for-the-blocked-uri-about#35559407
+// or chrome: https://bugs.chromium.org/p/chromium/issues/detail?id=749236
+function isProbablyAnExtension(reportObject) {
+  if (reportObject.data.blockedURI === 'chrome-extension') return true;
+  if (reportObject.data.blockedURI === 'about') return true;
+  if (isProbablyFirefoxExtension(reportObject)) return true;
+
+  return false;
+}
+
+
+// Firefox specifically (eg, privacy badger, react devtools)
+// firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
+// related: https://github.com/EFForg/privacybadger/issues/1793
+function isProbablyFirefoxExtension(reportObject) {
+  return (
+    (reportObject.data.blockedURI === 'inline') &&
+    (reportObject.data.sourceFile.indexOf('moz-extension://') === 0) &&
+    (reportObject.data.userAgent.indexOf('Mozilla/5.0') !== -1) &&
+    (reportObject.data.userAgent.indexOf('Gecko') !== -1) && 
+    (reportObject.data.userAgent.indexOf('Firefox') !== -1)
+  );
+}
+
+// Firefox containers also report false positives, so if the
+// injection is on column 1 on line 1 in Firefox, ignore it.
+function isProbablyFirefoxContainer(reportObject) {
+  return (
     (reportObject.data.userAgent.indexOf('Mozilla/5.0') !== -1) &&
     (reportObject.data.userAgent.indexOf('Gecko') !== -1) && 
     (reportObject.data.userAgent.indexOf('Firefox') !== -1) &&
@@ -62,10 +98,8 @@ function shouldReportToRollbar(reportObject) {
     (reportObject.data.lineNumber === 1) &&
     (reportObject.data.columnNumber === 1)
   );
-  if (isMaybeFirefoxContainer) return false;
-
-  return true;
 }
+
 
 function reportToRollbar(reportObject, req) {
   var reportingDomain = url.parse(reportObject.data.documentURI).host;
