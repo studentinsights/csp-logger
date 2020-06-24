@@ -30,3 +30,8 @@ heroku pg:psql -c 'select id, substr("violatedDirective", 0, 12), "documentURI",
 ```
 heroku pg:psql -c 'DELETE from "cspViolations" WHERE "lineNumber" = 1 AND "columnNumber" = 1';
 ```
+
+### Purge old records
+```
+heroku pg:psql -c 'SELECT count(*) from "cspViolations" where "createdAt" < '2020-06-24';'
+heroku pg:psql -c 'DELETE from "cspViolations" where "createdAt" < '2001-01-01';'
